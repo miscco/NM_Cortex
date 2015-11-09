@@ -1,24 +1,30 @@
 /*
-*	Copyright (c) 2014 Michael Schellenberger Costa
-*
-*	Permission is hereby granted, free of charge, to any person obtaining a copy
-*	of this software and associated documentation files (the "Software"), to deal
-*	in the Software without restriction, including without limitation the rights
-*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*	copies of the Software, and to permit persons to whom the Software is
-*	furnished to do so, subject to the following conditions:
-*
-*	The above copyright notice and this permission notice shall be included in
-*	all copies or substantial portions of the Software.
-*
-*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*	THE SOFTWARE.
-*/
+ *	Copyright (c) 2015 University of Lübeck
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy
+ *	of this software and associated documentation files (the "Software"), to deal
+ *	in the Software without restriction, including without limitation the rights
+ *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *	copies of the Software, and to permit persons to whom the Software is
+ *	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in
+ *	all copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *	THE SOFTWARE.
+ *
+ *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
+ *
+ *	Based on:	Characterization of K-Complexes and Slow Wave Activity in a Neural Mass Model
+ *				A Weigenand, M Schellenberger Costa, H-VV Ngo, JC Claussen, T Martinetz
+ *				PLoS Computational Biology. 2014;10:e1003923
+ */
 
 /************************************************************************************************/
 /*								Header file of a cortical module								*/
@@ -104,19 +110,6 @@ public:
 	friend class Stim;
 
 private:
-	/* Population variables */
-	vector<double> 	Ve	= _INIT(E_L_e),		/* excitatory membrane voltage						*/
-			Vi	= _INIT(E_L_i),		/* inhibitory membrane voltage						*/
-			Na	= _INIT(Na_eq),		/* Na concentration									*/
-			y_ee	= _INIT(0.0),		/* PostSP from excitatory to excitatory population	*/
-			y_ei	= _INIT(0.0),		/* PostSP from excitatory to inhibitory population	*/
-			y_ie	= _INIT(0.0),		/* PostSP from inhibitory to excitatory population	*/
-			y_ii	= _INIT(0.0),		/* PostSP from inhibitory to inhibitory population	*/
-			x_ee	= _INIT(0.0),		/* derivative of Phi_ee								*/
-			x_ei	= _INIT(0.0),		/* derivative of Phi_ei								*/
-			x_ie	= _INIT(0.0),		/* derivative of Phi_ie				 				*/
-			x_ii	= _INIT(0.0);		/* derivative of Phi_ii 							*/
-
 	/* Random number generators */
 	vector<GEN>		MTRands;
 
@@ -176,13 +169,30 @@ private:
 	/* Noise parameters in ms^-1 */
 	const double 	mphi		= 0.0;
 	const double	dphi		= 20E-1;
-	double		input		= 0.0;
+	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
 	const double 	N_ee		= 120;
 	const double 	N_ei		= 72;
 	const double 	N_ie		= 90;
 	const double 	N_ii		= 90;
+
+	/* Interation parameters for SRK4 */
+	const vector<double> A = {0.5, 0.5, 1.0, 1.0};
+	const vector<double> B = {0.75, 0.75, 0.0, 0.0};
+
+	/* Population variables */
+	vector<double> 	Ve		= _INIT(E_L_e),		/* excitatory membrane voltage						*/
+					Vi		= _INIT(E_L_i),		/* inhibitory membrane voltage						*/
+					Na		= _INIT(Na_eq),		/* Na concentration									*/
+					y_ee	= _INIT(0.0),		/* PostSP from excitatory to excitatory population	*/
+					y_ei	= _INIT(0.0),		/* PostSP from excitatory to inhibitory population	*/
+					y_ie	= _INIT(0.0),		/* PostSP from inhibitory to excitatory population	*/
+					y_ii	= _INIT(0.0),		/* PostSP from inhibitory to inhibitory population	*/
+					x_ee	= _INIT(0.0),		/* derivative of y_ee								*/
+					x_ei	= _INIT(0.0),		/* derivative of y_ei								*/
+					x_ie	= _INIT(0.0),		/* derivative of y_ie				 				*/
+					x_ii	= _INIT(0.0);		/* derivative of y_ii	 							*/
 };
 /****************************************************************************************************/
 /*										 		end			 										*/

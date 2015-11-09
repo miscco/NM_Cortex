@@ -1,5 +1,5 @@
 % mex command is given by: 
-% mex CXXFLAGS="\$CXXFLAGS -std=c++11" Cortex.cpp Cortical_Column.cpp
+% mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Cortex_mex.cpp Cortical_Column.cpp
 
 function Plots(T)
 
@@ -34,8 +34,10 @@ if nargin == 0
                 
     T           =   30;         % duration of the simulation
 end
-[Ve_N2, Na_N2, ~]    = Cortex(T, Input_N2, var_stim);
-[Ve_N3, Na_N3, ~]    = Cortex(T, Input_N3, var_stim);
+tic
+[Ve_N2, Na_N2, ~]    = Cortex_mex(T, Input_N2, var_stim);
+%[Ve_N3, Na_N3, ~]    = Cortex_mex(T, Input_N3, var_stim);
+toc
 
 % load the data the model should be fit to
 

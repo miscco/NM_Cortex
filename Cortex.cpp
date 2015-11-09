@@ -1,102 +1,75 @@
 /*
-*	Copyright (c) 2014 Michael Schellenberger Costa
-*
-*	Permission is hereby granted, free of charge, to any person obtaining a copy
-*	of this software and associated documentation files (the "Software"), to deal
-*	in the Software without restriction, including without limitation the rights
-*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*	copies of the Software, and to permit persons to whom the Software is
-*	furnished to do so, subject to the following conditions:
-*
-*	The above copyright notice and this permission notice shall be included in
-*	all copies or substantial portions of the Software.
-*
-*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*	THE SOFTWARE.
-*/
+ *	Copyright (c) 2014 University of Lübeck
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy
+ *	of this software and associated documentation files (the "Software"), to deal
+ *	in the Software without restriction, including without limitation the rights
+ *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *	copies of the Software, and to permit persons to whom the Software is
+ *	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in
+ *	all copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *	THE SOFTWARE.
+ *
+ *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
+ *
+ *	Based on:	Characterization of K-Complexes and Slow Wave Activity in a Neural Mass Model
+ *				A Weigenand, M Schellenberger Costa, H-VV Ngo, JC Claussen, T Martinetz
+ *				PLoS Computational Biology. 2014;10:e1003923
+ */
 
 /****************************************************************************************************/
-/* 		Implementation of the simulation as MATLAB routine (mex compiler)							*/
-/* 		mex command is given by:																	*/
-/* 		mex CXXFLAGS="\$CXXFLAGS -std=c++11" Cortex.cpp Cortical_Column.cpp							*/
-/*		The Simulation requires the following boost libraries:	Preprocessor						*/
-/*																Random								*/
+/*		Main file for compilation and runtime tests													*/
+/*		The Simulation requires the following boost libraries:	Random								*/
 /****************************************************************************************************/
-#include "mex.h"
-#include "matrix.h"
+#include <iostream>
+#include <chrono>
 #include "Cortical_Column.h"
-#include "Stimulation.h"
-#include "saves.h"
 
 /****************************************************************************************************/
 /*										Fixed simulation settings									*/
 /****************************************************************************************************/
-extern const int onset	= 10;								/* Time until data is stored in  s		*/
-extern const int res 	= 1E4;								/* Number of iteration steps per s		*/
-extern const int red 	= 1E2;								/* Number of iterations steps not saved	*/
-extern const double dt 	= 1E3/res;							/* Duration of a time step in ms		*/
-extern const double h	= sqrt(dt);							/* Square root of dt for SRK iteration	*/
+typedef std::chrono::high_resolution_clock::time_point timer;
+extern const int T 		= 30;
+extern const int res 	= 1E4;
+extern const double dt 	= 1E3/res;
+extern const double h	= sqrt(dt);
 /****************************************************************************************************/
 /*										 		end			 										*/
 /****************************************************************************************************/
 
+
 /****************************************************************************************************/
-/*										Simulation routine	 										*/
-/*										lhs defines outputs											*/
-/*										rhs defines inputs											*/
+/*										Main simulation routine										*/
 /****************************************************************************************************/
-void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
-	/* Set the seed */
-	srand(time(NULL));
+int main(void) {
+	/* Initializing the populations */
+	Cortical_Column Cortex = Cortical_Column();
 
-	/* Fetch inputs */
-	const int T				= (int) (mxGetScalar(prhs[0]));	/* Duration of simulation in s 			*/
-	const int Time 			= (T+onset)*res;				/* Total number of iteration steps 		*/
-	double* Param_Cortex	= mxGetPr (prhs[1]);			/* Parameters of cortical module 		*/
-	double* var_stim	 	= mxGetPr (prhs[2]);			/* Parameters of stimulation protocol 	*/
-
-	/* Initialize the population */
-	Cortical_Column Cortex(Param_Cortex);
-
-	/* Initialize the stimulation protocol */
-	Stim	Stimulation(Cortex, var_stim);
-
-	/* Data container in MATLAB format */
-	vector<mxArray*> Data;
-	Data.push_back(GetMexArray(1, T*res/red));	// Ve
-	Data.push_back(GetMexArray(1, T*res/red));	// Na
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ee
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ei
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ie
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ii
-
-	/* Pointer to the data blocks */
-	vector<double*> pData(Data.size(), NULL);
-	for(unsigned i=0; i<Data.size(); ++i)
-		pData[i] = mxGetPr(Data[i]);
+	/* Take the time of the simulation */
+	timer start,end;
 
 	/* Simulation */
-	int count = 0;
-	for (int t=0; t<(T+onset)*res; ++t) {
+	start = std::chrono::high_resolution_clock::now();
+	for (int t=0; t< T*res; ++t) {
 		Cortex.iterate_ODE();
-		Stimulation.check_stim(t);
-		if(t>=onset*res && t%red==0){
-			get_data(count, Cortex, pData);
-			++count;
-		}
 	}
+	end = std::chrono::high_resolution_clock::now();
 
-	/* Return the data containers */
-	for(unsigned i=0; i<Data.size(); ++i)
-		plhs[i] = Data[i];
-	plhs[6] = Stimulation.get_marker();
-	return;
+	/* Time consumed by the simulation */
+	double dif = 1E-3*std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+	std::cout << "simulation done!\n";
+	std::cout << "took " << dif 	<< " seconds" << "\n";
+	std::cout << "end\n";
 }
 /****************************************************************************************************/
-/*												end													*/
+/*										 		end			 										*/
 /****************************************************************************************************/
