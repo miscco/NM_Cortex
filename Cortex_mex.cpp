@@ -74,12 +74,12 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	/* Data container in MATLAB format */
 	vector<mxArray*> Data;
-	Data.push_back(GetMexArray(1, T*res/red));	// Ve
-	Data.push_back(GetMexArray(1, T*res/red));	// Na
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ee
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ei
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ie
-	Data.push_back(GetMexArray(1, T*res/red));	// S_ii
+	Data.push_back(SetMexArray(1, T*res/red));	// Ve
+	Data.push_back(SetMexArray(1, T*res/red));	// Na
+	Data.push_back(SetMexArray(1, T*res/red));	// S_ee
+	Data.push_back(SetMexArray(1, T*res/red));	// S_ei
+	Data.push_back(SetMexArray(1, T*res/red));	// S_ie
+	Data.push_back(SetMexArray(1, T*res/red));	// S_ii
 
 	/* Pointer to the data blocks */
 	vector<double*> pData(Data.size(), NULL);
