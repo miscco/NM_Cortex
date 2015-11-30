@@ -32,17 +32,19 @@
 #pragma once
 #include <cmath>
 #include <vector>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random/variate_generator.hpp>
+#include <random>
+// SGA: Libraries no longer necessary
+// #include <boost/random/mersenne_twister.hpp>
+// #include <boost/random/normal_distribution.hpp>
+// #include <boost/random/variate_generator.hpp>
 using std::vector;
 
 /****************************************************************************************************/
 /*										Typedefs for RNG											*/
 /****************************************************************************************************/
-typedef boost::random::mt11213b                    	ENG;    /* Mersenne Twister		*/
-typedef boost::random::normal_distribution<double>	DIST;   /* Normal Distribution	*/
-typedef boost::random::variate_generator<ENG,DIST> 	GEN;    /* Variate generator	*/
+typedef std::mt19937                    	ENG;    /* Mersenne Twister		*/
+typedef std::normal_distribution<double>	DIST;   /* Normal Distribution	*/
+
 /****************************************************************************************************/
 /*										 		end			 										*/
 /****************************************************************************************************/
@@ -108,10 +110,14 @@ public:
 
 	/* Stimulation protocol access */
 	friend class Stim;
+    
+    
 
 private:
 	/* Random number generators */
-	vector<GEN>		MTRands;
+    //ENG::result_type    seed = rand();
+    ENG                 mt;
+	vector<DIST>        MTRands;
 
 	/* Container for noise */
 	vector<double>	Rand_vars;
