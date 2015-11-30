@@ -30,13 +30,14 @@
 /*								Implementation of the stimulation protocol							*/
 /****************************************************************************************************/
 #pragma once
-#include <boost/random/uniform_int_distribution.hpp>
+//#include <boost/random/uniform_int_distribution.hpp>
+#include <random>
 #include "Cortical_Column.h"
 
 /****************************************************************************************************/
 /*										Typedefs for RNG											*/
 /****************************************************************************************************/
-typedef boost::random::uniform_int_distribution<>		DIST_int;   /* Uniform integer distribution	*/
+typedef std::uniform_int_distribution<>		DIST_int;   /* Uniform integer distribution	*/
 /****************************************************************************************************/
 /*										 		end			 										*/
 /****************************************************************************************************/
