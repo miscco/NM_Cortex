@@ -33,18 +33,25 @@
 #include <cmath>
 #include <vector>
 #include <random>
-// SGA: Libraries no longer necessary
-// #include <boost/random/mersenne_twister.hpp>
-// #include <boost/random/normal_distribution.hpp>
-// #include <boost/random/variate_generator.hpp>
 using std::vector;
-
 /****************************************************************************************************/
-/*										Typedefs for RNG											*/
+/*										Struct for RNG											*/
 /****************************************************************************************************/
-typedef std::mt19937                    	ENG;    /* Mersenne Twister		*/
-typedef std::normal_distribution<double>	DIST;   /* Normal Distribution	*/
-
+struct random_stream_normal
+{   
+    /* Random number engine: Mersenne-Twister */
+    std::mt19937_64                     mt;
+    /* Random number generator: Normal-distribution */
+    std::normal_distribution<double>    norm_dist;
+    /* Constructor for new random_stream_normal */    
+    random_stream_normal(double mean, double stddev)
+    : mt(rand()) , norm_dist(mean, stddev)
+    {};    
+    /* Overwrites the function-call operator "( )" */
+    double operator( )(void) {
+        return norm_dist(mt);
+    };
+};
 /****************************************************************************************************/
 /*										 		end			 										*/
 /****************************************************************************************************/
@@ -115,9 +122,7 @@ public:
 
 private:
 	/* Random number generators */
-    //ENG::result_type    seed = rand();
-    ENG                 mt;
-	vector<DIST>        MTRands;
+	vector<random_stream_normal>        MTRands;
 
 	/* Container for noise */
 	vector<double>	Rand_vars;

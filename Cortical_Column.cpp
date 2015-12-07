@@ -38,20 +38,19 @@ void Cortical_Column::set_RNG(void) {
 	extern const double dt;
 	/* Number of independent random variables */
 	int N = 2;
-    //mt();
 	/* Create RNG for each stream */
 	for (int i=0; i<N; ++i){
         
 		/* Add the RNG for I_{l}*/        
-		MTRands.push_back(DIST (0, dphi*dt));
+		MTRands.push_back(random_stream_normal(0.0, dphi*dt));
 
 		/* Add the RNG for I_{l,0} */        
-		MTRands.push_back(DIST (0, dt));
+		MTRands.push_back(random_stream_normal(0.0, dt));
         
 
 		/* Get the random number for the first iteration */
-		Rand_vars.push_back(MTRands[2*i](mt));
-		Rand_vars.push_back(MTRands[2*i+1](mt));
+		Rand_vars.push_back(MTRands[2*i]());
+		Rand_vars.push_back(MTRands[2*i+1]());
 	}
 }
 /****************************************************************************************************/
@@ -201,7 +200,7 @@ void Cortical_Column::add_RK(void) {
 
 	/* Generate noise for the next iteration */
 	for (unsigned i=0; i<Rand_vars.size(); ++i) {
-		Rand_vars[i] = MTRands[i](mt) + input;
+		Rand_vars[i] = MTRands[i]() + input;
 	}
 }
 /****************************************************************************************************/

@@ -30,13 +30,12 @@
 /*								Implementation of the stimulation protocol							*/
 /****************************************************************************************************/
 #pragma once
-//#include <boost/random/uniform_int_distribution.hpp>
 #include <random>
 #include "Cortical_Column.h"
-
 /****************************************************************************************************/
 /*										Typedefs for RNG											*/
 /****************************************************************************************************/
+typedef std::mt19937_64                    	ENG;    /* Mersenne Twister		*/
 typedef std::uniform_int_distribution<>		DIST_int;   /* Uniform integer distribution	*/
 /****************************************************************************************************/
 /*										 		end			 										*/
