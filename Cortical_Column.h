@@ -33,25 +33,26 @@
 #include <cmath>
 #include <vector>
 #include <random>
+#include "Random_Stream.h"
 using std::vector;
 /****************************************************************************************************/
 /*										Struct for RNG											*/
 /****************************************************************************************************/
-struct random_stream_normal
-{   
-    /* Random number engine: Mersenne-Twister */
-    std::mt19937_64                     mt;
-    /* Random number generator: Normal-distribution */
-    std::normal_distribution<double>    norm_dist;
-    /* Constructor for new random_stream_normal */    
-    random_stream_normal(double mean, double stddev)
-    : mt(rand()) , norm_dist(mean, stddev)
-    {};    
-    /* Overwrites the function-call operator "( )" */
-    double operator( )(void) {
-        return norm_dist(mt);
-    };
-};
+// struct random_stream_normal
+// {   
+//     /* Random number engine: Mersenne-Twister */
+//     std::mt19937_64                     mt;
+//     /* Random number generator: Normal-distribution */
+//     std::normal_distribution<double>    norm_dist;
+//     /* Constructor for new random_stream_normal */    
+//     random_stream_normal(double mean, double stddev)
+//     : mt(rand()) , norm_dist(mean, stddev)
+//     {};    
+//     /* Overwrites the function-call operator "( )" */
+//     double operator( )(void) {
+//         return norm_dist(mt);
+//     };
+// };
 /****************************************************************************************************/
 /*										 		end			 										*/
 /****************************************************************************************************/
