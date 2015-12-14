@@ -30,7 +30,6 @@
 /*								Implementation of the stimulation protocol							*/
 /****************************************************************************************************/
 #pragma once
-#include <random>
 #include "Random_Stream.h"
 
 /****************************************************************************************************/
@@ -125,7 +124,7 @@ private:
 	vector<int>		marker_stimulation;
 
 	/* Random number generator in case of semi-periodic stimulation */
- 	random_stream_uniform		Uniform_Distribution;
+ 	random_stream_uniform_int		Uniform_Distribution;
 };
 /****************************************************************************************************/
 /*										 		end													*/
@@ -171,7 +170,7 @@ void Stim::setup (double* var_stim) {
 		/* If ISI is random create RNG */
 		if (ISI_range != 0){
 			/* Generate uniform distribution */
-			Uniform_Distribution = random_stream_uniform(ISI-ISI_range, ISI+ISI_range);
+			Uniform_Distribution = random_stream_uniform_int(ISI-ISI_range, ISI+ISI_range);
 		}
 	} else {
 		/* In case of phase dependent stimulation, time_to_stim is the time from minimum detection to start of stimulation */

@@ -25,14 +25,14 @@
  */
 
 /************************************************************************************************/
-/*                                  Random number Streams              							*/
+/*                                        Random number streams     							*/
 /************************************************************************************************/
 #pragma once
 #include <random>
-/****************************************************************************************************/
-/*										Struct for RNG											*/
-/****************************************************************************************************/
 
+/****************************************************************************************************/
+/*										Struct for normal distribution								*/
+/****************************************************************************************************/
 struct random_stream_normal
 {   
     /* Random number engine: Mersenne-Twister */
@@ -40,10 +40,8 @@ struct random_stream_normal
     /* Random number generator: Normal-distribution */
     std::normal_distribution<double>    norm_dist;
     /* Constructors */
-    // Default (setting mean = 0, stddev = 1)
-    random_stream_normal()
-    : mt(rand()) , norm_dist(0.0, 1)
-    {};
+    // Default
+    random_stream_normal(){};
     // using mean and std deviation as inputs    
     random_stream_normal(double mean, double stddev)
     : mt(rand()) , norm_dist(mean, stddev)
@@ -54,19 +52,20 @@ struct random_stream_normal
     };
 };
 
-struct random_stream_uniform
+/****************************************************************************************************/
+/*										Struct for uniform int distribution							*/
+/****************************************************************************************************/
+struct random_stream_uniform_int
 {
     /* Random number engine: Mersenne-Twister */
     std::mt19937_64                     mt;
     /* Random number generator: Normal-distribution */
     std::uniform_int_distribution<>     uniform_dist;
     /* Constructors */
-    // Default (setting min = 0, max = 1)  
-    random_stream_uniform()
-    : mt(rand()) , uniform_dist(0, 1)
-    {};
+    // Default
+    random_stream_uniform_int(){};
     // using upper and lower bound as inputs
-    random_stream_uniform(double lower_bound, double upper_bound)
+    random_stream_uniform_int(double lower_bound, double upper_bound)
     : mt(rand()) , uniform_dist(lower_bound, upper_bound)
     {};
     
