@@ -30,16 +30,7 @@
 /*								Implementation of the stimulation protocol							*/
 /****************************************************************************************************/
 #pragma once
-#include <boost/random/uniform_int_distribution.hpp>
-#include "Cortical_Column.h"
-
-/****************************************************************************************************/
-/*										Typedefs for RNG											*/
-/****************************************************************************************************/
-typedef boost::random::uniform_int_distribution<>		DIST_int;   /* Uniform integer distribution	*/
-/****************************************************************************************************/
-/*										 		end			 										*/
-/****************************************************************************************************/
+#include "Random_Stream.h"
 
 /****************************************************************************************************/
 /*											Stimulation object										*/
@@ -133,8 +124,7 @@ private:
 	vector<int>		marker_stimulation;
 
 	/* Random number generator in case of semi-periodic stimulation */
-	ENG				Generator;
-	DIST_int		Uniform_Distribution;
+ 	random_stream_uniform_int		Uniform_Distribution;
 };
 /****************************************************************************************************/
 /*										 		end													*/
@@ -179,11 +169,8 @@ void Stim::setup (double* var_stim) {
 
 		/* If ISI is random create RNG */
 		if (ISI_range != 0){
-			/* Create the generator */
-			Generator = ENG(rand());
-
-			/* Combine RNG with distribution */
-			Uniform_Distribution = DIST_int(ISI-ISI_range, ISI+ISI_range);
+			/* Generate uniform distribution */
+			Uniform_Distribution = random_stream_uniform_int(ISI-ISI_range, ISI+ISI_range);
 		}
 	} else {
 		/* In case of phase dependent stimulation, time_to_stim is the time from minimum detection to start of stimulation */
@@ -221,7 +208,7 @@ void Stim::check_stim	(int time) {
 			}
 			/* After last stimulus in event update the timer with respect to (random) ISI*/
 			else {
-				time_to_stimuli += (ISI_range==0)? ISI : Uniform_Distribution(Generator);
+				time_to_stimuli += (ISI_range==0)? ISI : Uniform_Distribution();
 
 				/* Reset the stimulus counter for next stimulation event */
 				count_stimuli = 1;
