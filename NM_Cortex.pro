@@ -5,14 +5,14 @@ CONFIG -= qt
 
 TARGET = Cortex.cpp
 
-SOURCES +=  Cortex_mex.cpp \
-	    Cortex.cpp \
+SOURCES +=  Cortex_mex.cpp      \
+            Cortex.cpp          \
 	    Cortical_Column.cpp
 
-HEADERS +=  Cortical_Column.h \
-            Random_Stream.h \
-	    saves.h \
-	    Stimulation.h
+HEADERS +=  Cortical_Column.h   \
+            Data_Storage.h      \
+            Random_Stream.h     \
+            Stimulation.h
 
 QMAKE_CXXFLAGS += -std=c++11 -O3
 

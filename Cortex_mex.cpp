@@ -33,9 +33,8 @@
 /****************************************************************************************************/
 #include "mex.h"
 #include "matrix.h"
-#include "Cortical_Column.h"
+#include "Data_Storage.h"
 #include "Stimulation.h"
-#include "saves.h"
 mxArray* SetMexArray(int N, int M);
 
 /****************************************************************************************************/
