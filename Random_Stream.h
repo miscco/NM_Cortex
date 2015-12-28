@@ -21,20 +21,19 @@
  *
  *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
  *              Stefanie Gareis: gareis@inb.uni-luebeck.de
- *
  */
 
-/************************************************************************************************/
-/*                                        Random number streams     							*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*                                       Random number streams                                      */
+/****************************************************************************************************/
 #pragma once
 #include <random>
 
 /****************************************************************************************************/
-/*										Struct for normal distribution								*/
+/*									Struct for normal distribution                                  */
 /****************************************************************************************************/
 struct random_stream_normal
-{   
+{
     /* Random number engine: Mersenne-Twister */
     std::mt19937_64                     mt;
     /* Random number generator: Normal-distribution */
@@ -51,15 +50,18 @@ struct random_stream_normal
         return norm_dist(mt);
     }
 };
+/****************************************************************************************************/
+/*										 		end													*/
+/****************************************************************************************************/
 
 /****************************************************************************************************/
-/*										Struct for uniform int distribution							*/
+/*									Struct for uniform int distribution                             */
 /****************************************************************************************************/
 struct random_stream_uniform_int
 {
     /* Random number engine: Mersenne-Twister */
     std::mt19937_64                     mt;
-    /* Random number generator: Normal-distribution */
+    /* Random number generator: Uniform integer-distribution */
     std::uniform_int_distribution<>     uniform_dist;
 
     /* Constructors */
@@ -73,3 +75,6 @@ struct random_stream_uniform_int
         return uniform_dist(mt);
     }
 };
+/****************************************************************************************************/
+/*										 		end													*/
+/****************************************************************************************************/

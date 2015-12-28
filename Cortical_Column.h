@@ -24,6 +24,10 @@
  *	Based on:	Characterization of K-Complexes and Slow Wave Activity in a Neural Mass Model
  *				A Weigenand, M Schellenberger Costa, H-VV Ngo, JC Claussen, T Martinetz
  *				PLoS Computational Biology. 2014;10:e1003923
+ * 
+ *				Modeling the effect of sleep regulation on a neural mass model.
+ *				M Schellenberger Costa, J Born, JC Claussen, T Martinetz.
+ *				Journal of Computational Neuroscience (in review)
  */
 
 /************************************************************************************************/

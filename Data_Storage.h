@@ -20,10 +20,6 @@
  *	THE SOFTWARE.
  *
  *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
- *
- *	Based on:	Characterization of K-Complexes and Slow Wave Activity in a Neural Mass Model
- *				A Weigenand, M Schellenberger Costa, H-VV Ngo, JC Claussen, T Martinetz
- *				PLoS Computational Biology. 2014;10:e1003923
  */
 
 /****************************************************************************************************/
