@@ -28,7 +28,6 @@
 
 /****************************************************************************************************/
 /*		Main file for compilation and runtime tests													*/
-/*		The Simulation requires the following boost libraries:	Random								*/
 /****************************************************************************************************/
 #include <iostream>
 #include <chrono>

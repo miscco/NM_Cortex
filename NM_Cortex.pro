@@ -10,7 +10,7 @@ SOURCES +=  Cortex_mex.cpp \
 	    Cortical_Column.cpp
 
 HEADERS +=  Cortical_Column.h \
-	    ODE.h \
+            Random_Stream.h \
 	    saves.h \
 	    Stimulation.h
 

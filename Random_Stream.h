@@ -39,17 +39,17 @@ struct random_stream_normal
     std::mt19937_64                     mt;
     /* Random number generator: Normal-distribution */
     std::normal_distribution<double>    norm_dist;
+
     /* Constructors */
-    // Default
-    random_stream_normal(){};
-    // using mean and std deviation as inputs    
+    random_stream_normal(){}
     random_stream_normal(double mean, double stddev)
     : mt(rand()) , norm_dist(mean, stddev)
-    {};    
+    {}
+
     /* Overwrites the function-call operator "( )" */
     double operator( )(void) {
         return norm_dist(mt);
-    };
+    }
 };
 
 /****************************************************************************************************/
@@ -61,16 +61,15 @@ struct random_stream_uniform_int
     std::mt19937_64                     mt;
     /* Random number generator: Normal-distribution */
     std::uniform_int_distribution<>     uniform_dist;
+
     /* Constructors */
-    // Default
-    random_stream_uniform_int(){};
-    // using upper and lower bound as inputs
+    random_stream_uniform_int(){}
     random_stream_uniform_int(double lower_bound, double upper_bound)
     : mt(rand()) , uniform_dist(lower_bound, upper_bound)
-    {};
-    
+    {}
+
     /* Overwrites the function-call operator "( )" */
     double operator( )(void) {
         return uniform_dist(mt);
-    };
+    }
 };

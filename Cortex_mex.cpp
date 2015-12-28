@@ -30,7 +30,6 @@
 /* 		Implementation of the simulation as MATLAB routine (mex compiler)							*/
 /* 		mex command is given by:																	*/
 /* 		mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Cortex_mex.cpp Cortical_Column.cpp					*/
-/*		The Simulation requires the following boost libraries:	Random								*/
 /****************************************************************************************************/
 #include "mex.h"
 #include "matrix.h"
@@ -70,7 +69,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	Cortical_Column Cortex(Param_Cortex);
 
 	/* Initialize the stimulation protocol */
-	Stim	Stimulation(Cortex, var_stim);
+    Stim Stimulation(Cortex, var_stim);
 
 	/* Data container in MATLAB format */
 	vector<mxArray*> Data;

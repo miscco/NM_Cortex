@@ -100,8 +100,6 @@ public:
 
 	/* Stimulation protocol access */
 	friend class Stim;
-    
-    
 
 private:
 	/* Random number generators */

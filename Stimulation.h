@@ -30,6 +30,7 @@
 /*								Implementation of the stimulation protocol							*/
 /****************************************************************************************************/
 #pragma once
+#include "Cortical_Column.h"
 #include "Random_Stream.h"
 
 /****************************************************************************************************/
@@ -285,7 +286,7 @@ void Stim::check_stim	(int time) {
 		}
 		count_pause++;
 	}
-};
+}
 
 mxArray* Stim::get_marker(void) {
 	extern const int red;
@@ -299,8 +300,7 @@ mxArray* Stim::get_marker(void) {
 		Pr_Marker[i] = marker_stimulation [i]/red;
 	}
 	return Marker;
-};
-
+}
 /****************************************************************************************************/
 /*										 		end													*/
 /****************************************************************************************************/
