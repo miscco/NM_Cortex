@@ -103,12 +103,12 @@ double Cortical_Column::I_ep	(int N) const{
 
 /* Inhibitory input to pyramidal population */
 double Cortical_Column::I_gp	(int N) const{
-	double I = g_AMPA * s_gp[N] * (Vp[N] - E_GABA);
+	double I = g_GABA * s_gp[N] * (Vp[N] - E_GABA);
 	return I;
 }
 /* Excitatory input to inhibitory population */
 double Cortical_Column::I_ei	(int N) const{
-	double I = g_GABA * s_ei[N] * (Vi[N] - E_AMPA);
+	double I = g_AMPA * s_ei[N] * (Vi[N] - E_AMPA);
 	return I;
 }
 
