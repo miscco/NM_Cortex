@@ -24,10 +24,6 @@
  *	Based on:	Characterization of K-Complexes and Slow Wave Activity in a Neural Mass Model
  *				A Weigenand, M Schellenberger Costa, H-VV Ngo, JC Claussen, T Martinetz
  *				PLoS Computational Biology. 2014;10:e1003923
- * 
- *				Modeling the effect of sleep regulation on a neural mass model.
- *				M Schellenberger Costa, J Born, JC Claussen, T Martinetz.
- *				Journal of Computational Neuroscience (in review)
  */
 
 /************************************************************************************************/
@@ -65,7 +61,7 @@ public:
 	{set_RNG();}
 
 	Cortical_Column(double* Par)
-	 :sigma_e 	(Par[0]),	  g_KNa		(Par[1]),	dphi		(Par[2])
+	 :sigma_p 	(Par[0]),	  g_KNa		(Par[1]),	dphi		(Par[2])
 	{set_RNG();}
 
 	/* Initialize the RNGs */
@@ -75,15 +71,15 @@ public:
 	void	set_input	(double I) {input = I;}
 
 	/* Firing rates */
-	double 	get_Qe		(int) const;
+	double 	get_Qp		(int) const;
 	double 	get_Qi		(int) const;
 
 	/* Currents */
-	double 	I_ee		(int) const;
+	double 	I_ep		(int) const;
 	double 	I_ei		(int) const;
-	double 	I_ie		(int) const;
-	double 	I_ii		(int) const;
-	double 	I_L_e		(int) const;
+	double 	I_gp		(int) const;
+	double 	I_gi		(int) const;
+	double 	I_L_p		(int) const;
 	double 	I_L_i		(int) const;
 	double 	I_KNa		(int) const;
 
@@ -114,40 +110,44 @@ private:
 
 	/* Declaration and Initialization of parameters */
 	/* Membrane time in ms */
-	const double 	tau_e 		= 30;
+	const double 	tau_p 		= 30;
 	const double 	tau_i 		= 30;
 
 	/* Maximum firing rate in ms^-1 */
-	const double 	Qe_max		= 30.E-3;
+	const double 	Qp_max		= 30.E-3;
 	const double 	Qi_max		= 60.E-3;
 
 	/* Sigmoid threshold in mV */
-	const double 	theta_e		= -58.5;
+	const double 	theta_p		= -58.5;
 	const double 	theta_i		= -58.5;
 
 	/* Sigmoid gain in mV */
-	const double 	sigma_e		= 4;
+	const double 	sigma_p		= 4;
 	const double 	sigma_i		= 6;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
 	const double 	C1		= (3.14159265/sqrt(3));
 
 	/* Parameters of the firing adaption */
-	const double 	alpha_Na	= 2.;		/* Sodium influx per spike  in mM ms 	*/
-	const double 	tau_Na		= 1.;		/* Sodium time constant	    in ms 	*/
+	const double 	alpha_Na	= 2.;			/* Sodium influx per spike  in mM ms 	*/
+	const double 	tau_Na		= 1.;			/* Sodium time constant	    in ms 	*/
 
 	const double 	R_pump   	= 0.09;        	/* Na-K pump constant	    in mM/ms 	*/
 	const double 	Na_eq    	= 9.5;         	/* Na-eq concentration	    in mM 	*/
 
 	/* PSP rise time in ms^-1 */
 	const double 	gamma_e		= 70E-3;
-	const double 	gamma_i		= 58.6E-3;
+	const double 	gamma_g		= 58.6E-3;
 
-	/* Conductivities in mS/cm^-2 */
-	/* Leak */
-	const double 	g_L    		= 1;
+	/* Conductivities */
+	/* Leak  in aU*/
+	const double 	g_L    		= 1.;
 
-	/* KNa */
+	/* Synaptic conductivity in ms */
+	const double 	g_AMPA 		= 1.;
+	const double 	g_GABA 		= 1.;
+
+	/* KNa in mS/cm^-2 */
 	const double	g_KNa		= 1.33;
 
 	/* Reversal potentials in mV */
@@ -156,7 +156,7 @@ private:
 	const double 	E_GABA  	= -70;
 
 	/* Leak */
-	const double 	E_L_e 		= -66;
+	const double 	E_L_p 		= -66;
 	const double 	E_L_i 		= -64;
 
 	/* Potassium */
@@ -168,9 +168,9 @@ private:
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
-	const double 	N_ee		= 120;
-	const double 	N_ei		= 72;
-	const double 	N_ie		= 90;
+	const double 	N_pp		= 120;
+	const double 	N_pi		= 72;
+	const double 	N_ip		= 90;
 	const double 	N_ii		= 90;
 
 	/* Interation parameters for SRK4 */
@@ -178,17 +178,17 @@ private:
 	const vector<double> B = {0.75, 0.75, 0.0, 0.0};
 
 	/* Population variables */
-	vector<double> 	Ve		= _INIT(E_L_e),		/* excitatory membrane voltage						*/
+	vector<double> 	Vp		= _INIT(E_L_p),		/* excitatory membrane voltage						*/
 					Vi		= _INIT(E_L_i),		/* inhibitory membrane voltage						*/
 					Na		= _INIT(Na_eq),		/* Na concentration									*/
-					y_ee	= _INIT(0.0),		/* PostSP from excitatory to excitatory population	*/
-					y_ei	= _INIT(0.0),		/* PostSP from excitatory to inhibitory population	*/
-					y_ie	= _INIT(0.0),		/* PostSP from inhibitory to excitatory population	*/
-					y_ii	= _INIT(0.0),		/* PostSP from inhibitory to inhibitory population	*/
-					x_ee	= _INIT(0.0),		/* derivative of y_ee								*/
-					x_ei	= _INIT(0.0),		/* derivative of y_ei								*/
-					x_ie	= _INIT(0.0),		/* derivative of y_ie				 				*/
-					x_ii	= _INIT(0.0);		/* derivative of y_ii	 							*/
+					s_ep	= _INIT(0.0),		/* PostSP from excitatory to excitatory population	*/
+					s_ei	= _INIT(0.0),		/* PostSP from excitatory to inhibitory population	*/
+					s_gp	= _INIT(0.0),		/* PostSP from inhibitory to excitatory population	*/
+					s_gi	= _INIT(0.0),		/* PostSP from inhibitory to inhibitory population	*/
+					x_ep	= _INIT(0.0),		/* derivative of s_ep								*/
+					x_ei	= _INIT(0.0),		/* derivative of s_ei								*/
+					x_gp	= _INIT(0.0),		/* derivative of s_gp				 				*/
+					x_gi	= _INIT(0.0);		/* derivative of s_gi	 							*/
 };
 /****************************************************************************************************/
 /*										 		end			 										*/
