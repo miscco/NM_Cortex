@@ -169,8 +169,8 @@ private:
 
 	/* Connectivities (dimensionless) */
 	const double 	N_pp		= 120;
-	const double 	N_pi		= 72;
-	const double 	N_ip		= 90;
+	const double 	N_ip		= 72;
+	const double 	N_pi		= 90;
 	const double 	N_ii		= 90;
 
 	/* Interation parameters for SRK4 */

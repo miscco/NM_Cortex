@@ -40,13 +40,13 @@ void Cortical_Column::set_RNG(void) {
 	int N = 2;
 	/* Create RNG for each stream */
 	for (int i=0; i<N; ++i){
-        
-		/* Add the RNG for I_{l}*/        
+
+		/* Add the RNG for I_{l}*/
 		MTRands.push_back(random_stream_normal(0.0, dphi*dt));
 
-		/* Add the RNG for I_{l,0} */        
+		/* Add the RNG for I_{l,0} */
 		MTRands.push_back(random_stream_normal(0.0, dt));
-        
+
 
 		/* Get the random number for the first iteration */
 		Rand_vars.push_back(MTRands[2*i]());
@@ -173,8 +173,8 @@ void Cortical_Column::set_RK (int N) {
 	s_gp[N+1] = s_gp[0] + A[N] * dt*(x_gp[N]);
 	s_gi[N+1] = s_gi[0] + A[N] * dt*(x_gi[N]);
 	x_ep[N+1] = x_ep[0] + A[N] * dt*(pow(gamma_e, 2) * (N_pp * get_Qp(N) - s_ep[N]) - 2 * gamma_e * x_ep[N]) + noise_xRK(N, 0);
-	x_ei[N+1] = x_ei[0] + A[N] * dt*(pow(gamma_e, 2) * (N_pi * get_Qp(N) - s_ei[N]) - 2 * gamma_e * x_ei[N]) + noise_xRK(N, 1)	;
-	x_gp[N+1] = x_gp[0] + A[N] * dt*(pow(gamma_g, 2) * (N_ip * get_Qi(N) - s_gp[N]) - 2 * gamma_g * x_gp[N]);
+	x_ei[N+1] = x_ei[0] + A[N] * dt*(pow(gamma_e, 2) * (N_ip * get_Qp(N) - s_ei[N]) - 2 * gamma_e * x_ei[N]) + noise_xRK(N, 1)	;
+	x_gp[N+1] = x_gp[0] + A[N] * dt*(pow(gamma_g, 2) * (N_pi * get_Qi(N) - s_gp[N]) - 2 * gamma_g * x_gp[N]);
 	x_gi[N+1] = x_gi[0] + A[N] * dt*(pow(gamma_g, 2) * (N_ii * get_Qi(N) - s_gi[N]) - 2 * gamma_g * x_gi[N]);
 }
 /****************************************************************************************************/
