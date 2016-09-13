@@ -22,23 +22,18 @@
  *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
  */
 
-/****************************************************************************************************/
-/*									Functions for data storage										*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                        Functions for data storage                          */
+/******************************************************************************/
 #pragma once
+#include <vector>
 #include "Cortical_Column.h"
 
-/****************************************************************************************************/
-/*											Save data												*/
-/****************************************************************************************************/
-inline void get_data(int counter, Cortical_Column& Col, vector<double*> pData) {
-	pData[0][counter] = Col.Ve	[0];
-	pData[1][counter] = Col.Vi	[0];
-	pData[2][counter] = Col.y_ee[0];
-	pData[3][counter] = Col.y_ei[0];
-	pData[4][counter] = Col.y_ie[0];
-	pData[5][counter] = Col.y_ii[0];
+inline void get_data(unsigned counter, Cortical_Column& Col, std::vector<double*> pData) {
+    pData[0][counter] = Col.Vp	[0];
+    pData[1][counter] = Col.Vi	[0];
+    pData[2][counter] = Col.s_ep[0];
+    pData[3][counter] = Col.s_ei[0];
+    pData[4][counter] = Col.s_gp[0];
+    pData[5][counter] = Col.s_gi[0];
 }
-/****************************************************************************************************/
-/*										 		end													*/
-/****************************************************************************************************/
