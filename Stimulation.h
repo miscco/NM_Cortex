@@ -131,7 +131,7 @@ private:
 /******************************************************************************/
 /*							Function definitions							  */
 /******************************************************************************/
-static void Stim::setup (double* var_stim) {
+void Stim::setup (double* var_stim) {
     extern const int onset;
     extern const int res;
 
@@ -177,7 +177,7 @@ static void Stim::setup (double* var_stim) {
     }
 }
 
-static void Stim::check_stim	(int time) {
+void Stim::check_stim	(int time) {
     /* Check if stimulation should start */
     switch (mode) {
 

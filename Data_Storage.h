@@ -29,7 +29,8 @@
 #include <vector>
 #include "Cortical_Column.h"
 
-inline void get_data(unsigned counter, Cortical_Column& Col, std::vector<double*> pData) {
+inline void get_data(unsigned counter, Cortical_Column& Col,
+                     std::vector<double*> pData) {
     pData[0][counter] = Col.Vp	[0];
     pData[1][counter] = Col.Vi	[0];
     pData[2][counter] = Col.s_ep[0];

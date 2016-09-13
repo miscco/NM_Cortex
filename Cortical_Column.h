@@ -32,13 +32,13 @@
 #pragma once
 #include <cmath>
 #include <vector>
+
 #include "Random_Stream.h"
 
 class Cortical_Column {
 public:
     Cortical_Column(double* Par)
-        :sigma_p 	(Par[0]),	  g_KNa		(Par[1]),	dphi		(Par[2])
-    {set_RNG();}
+    : sigma_p (Par[0]), g_KNa (Par[1]), dphi (Par[2]) {set_RNG();}
 
     void	set_input	(double I) {input = I;}
     void	iterate_ODE	(void);
@@ -164,7 +164,7 @@ private:
                         x_gp= init(0.0),	/* derivative of s_gp				 				*/
                         x_gi= init(0.0);	/* derivative of s_gi	 							*/
     /* Data storage  access */
-    friend void get_data (int, Cortical_Column&, std::vector<double*>);
+    friend void get_data (unsigned, Cortical_Column&, std::vector<double*>);
 
     /* Stimulation protocol access */
     friend class Stim;
