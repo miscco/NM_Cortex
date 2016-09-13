@@ -43,7 +43,6 @@ public:
     void	set_input	(double I) {input = I;}
     void	iterate_ODE	(void);
 private:
-    /* Initialize the RNGs */
     void 	set_RNG		(void);
 
     /* Firing rates */
@@ -73,11 +72,15 @@ private:
     /* Helper functions */
     inline std::vector<double> init (double value)
     {return {value, 0.0, 0.0, 0.0, 0.0};}
+
     inline void add_RK (std::vector<double>& var)
     {var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6;}
 
+    inline void add_RK_noise (std::vector<double>& var, unsigned noise)
+    {var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6 + noise_aRK(noise);}
+
     /* Random number generators */
-    std::vector<random_stream_normal>        MTRands;
+    std::vector<random_stream_normal> MTRands;
 
     /* Container for noise */
     std::vector<double>	Rand_vars;

@@ -152,8 +152,8 @@ void Cortical_Column::add_RK(void) {
     add_RK(s_ei);
     add_RK(s_gp);
     add_RK(s_gi);
-    add_RK(x_ep);
-    add_RK(x_ei);
+    add_RK_noise(x_ep, 0);
+    add_RK_noise(x_ei, 1);
     add_RK(x_gp);
     add_RK(x_gi);
 
@@ -172,6 +172,3 @@ void Cortical_Column::iterate_ODE(void) {
     }
     add_RK();
 }
-/******************************************************************************/
-/*                                  end                                       */
-/******************************************************************************/
