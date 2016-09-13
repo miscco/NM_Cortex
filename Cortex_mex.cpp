@@ -26,95 +26,111 @@
  *				PLoS Computational Biology. 2014;10:e1003923
  */
 
-/****************************************************************************************************/
-/* 		Implementation of the simulation as MATLAB routine (mex compiler)							*/
-/* 		mex command is given by:																	*/
-/* 		mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Cortex_mex.cpp Cortical_Column.cpp					*/
-/****************************************************************************************************/
+/******************************************************************************/
+/* Implementation of the simulation as MATLAB routine (mex compiler)		  */
+/* mex command is given by:													  */
+/* mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Cortex_mex.cpp Cortical_Column.cpp*/
+/******************************************************************************/
 #include "mex.h"
 #include "matrix.h"
+
+#include <iterator>
+#include <vector>
+
 #include "Data_Storage.h"
 #include "Stimulation.h"
 mxArray* SetMexArray(int N, int M);
+mxArray* get_marker(Stim &stim);
 
-/****************************************************************************************************/
-/*										Fixed simulation settings									*/
-/****************************************************************************************************/
-extern const int onset	= 10;								/* Time until data is stored in  s		*/
-extern const int res 	= 1E4;								/* Number of iteration steps per s		*/
-extern const int red 	= 1E2;								/* Number of iterations steps not saved	*/
-extern const double dt 	= 1E3/res;							/* Duration of a time step in ms		*/
-extern const double h	= sqrt(dt);							/* Square root of dt for SRK iteration	*/
-/****************************************************************************************************/
-/*										 		end			 										*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                          Fixed simulation settings						  */
+/******************************************************************************/
+extern const int onset	= 10;		/* Time until data is stored in  s		  */
+extern const int res 	= 1E4;		/* Number of iteration steps per s		  */
+extern const int red 	= 1E2;		/* Number of iterations steps not saved	  */
+extern const double dt 	= 1E3/res;	/* Duration of a time step in ms		  */
+extern const double h	= sqrt(dt); /* Square root of dt for SRK iteration	  */
 
-/****************************************************************************************************/
-/*										Simulation routine	 										*/
-/*										lhs defines outputs											*/
-/*										rhs defines inputs											*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                              Simulation routine	 						  */
+/*								lhs defines outputs							  */
+/*								rhs defines inputs							  */
+/******************************************************************************/
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
-	/* Set the seed */
-	srand(time(NULL));
+    /* Set the seed */
+    srand(time(NULL));
 
-	/* Fetch inputs */
-	const int T				= (int) (mxGetScalar(prhs[0]));	/* Duration of simulation in s 			*/
-	const int Time 			= (T+onset)*res;				/* Total number of iteration steps 		*/
-	double* Param_Cortex	= mxGetPr (prhs[1]);			/* Parameters of cortical module 		*/
-	double* var_stim	 	= mxGetPr (prhs[2]);			/* Parameters of stimulation protocol 	*/
+    /* Fetch inputs */
+    const int T				= (int) (mxGetScalar(prhs[0]));	/* Duration of simulation in s 			*/
+    const int Time 			= (T+onset)*res;				/* Total number of iteration steps 		*/
+    double* Param_Cortex	= mxGetPr (prhs[1]);			/* Parameters of cortical module 		*/
+    double* var_stim	 	= mxGetPr (prhs[2]);			/* Parameters of stimulation protocol 	*/
 
-	/* Initialize the population */
-	Cortical_Column Cortex(Param_Cortex);
+    /* Initialize the population */
+    Cortical_Column Cortex(Param_Cortex);
 
-	/* Initialize the stimulation protocol */
+    /* Initialize the stimulation protocol */
     Stim Stimulation(Cortex, var_stim);
 
-	/* Data container in MATLAB format */
-	vector<mxArray*> Data;
-	Data.push_back(SetMexArray(1, T*res/red));	// Ve
-	Data.push_back(SetMexArray(1, T*res/red));	// Na
-	Data.push_back(SetMexArray(1, T*res/red));	// S_ee
-	Data.push_back(SetMexArray(1, T*res/red));	// S_ei
-	Data.push_back(SetMexArray(1, T*res/red));	// S_ie
-	Data.push_back(SetMexArray(1, T*res/red));	// S_ii
+    /* Data container in MATLAB format */
+    std::vector<mxArray*> dataArray;
+    dataArray.reserve(6);
+    dataArray.push_back(SetMexArray(1, T*res/red));	// Vp
+    dataArray.push_back(SetMexArray(1, T*res/red));	// Na
+    dataArray.push_back(SetMexArray(1, T*res/red));	// s_ep
+    dataArray.push_back(SetMexArray(1, T*res/red));	// s_ei
+    dataArray.push_back(SetMexArray(1, T*res/red));	// s_gp
+    dataArray.push_back(SetMexArray(1, T*res/red));	// s_gi
 
-	/* Pointer to the data blocks */
-	vector<double*> pData(Data.size(), NULL);
-	for(unsigned i=0; i<Data.size(); ++i)
-		pData[i] = mxGetPr(Data[i]);
+    /* Pointer to the data blocks */
+    std::vector<double*> dataPointer;
+    dataPointer.reserve(dataArray.size());
+    for (auto &dataptr : dataArray) {
+        dataPointer.push_back(mxGetPr(dataptr));
+    }
 
-	/* Simulation */
-	int count = 0;
-	for (int t=0; t<(T+onset)*res; ++t) {
-		Cortex.iterate_ODE();
-		Stimulation.check_stim(t);
-		if(t>=onset*res && t%red==0){
-			get_data(count, Cortex, pData);
-			++count;
-		}
-	}
+    /* Simulation */
+    int count = 0;
+    for (unsigned t=0; t < Time; ++t) {
+        Cortex.iterate_ODE();
+        Stimulation.check_stim(t);
+        if(t >= onset*res && t%red == 0){
+            get_data(count, Cortex, dataPointer);
+            ++count;
+        }
+    }
 
-	/* Return the data containers */
-	for(unsigned i=0; i<Data.size(); ++i)
-		plhs[i] = Data[i];
-	plhs[6] = Stimulation.get_marker();
-	return;
+    /* Return the data containers */
+    nlhs = dataArray.size()+1;
+    for (auto &dataptr : dataArray) {
+        plhs[std::distance(&dataptr, dataArray.data())] = dataptr;
+    }
+    plhs[dataArray.size()] = get_marker(Stimulation);
+    return;
 }
-/****************************************************************************************************/
-/*												end													*/
-/****************************************************************************************************/
 
-/****************************************************************************************************/
-/*									Create MATLAB data container									*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                          Create MATLAB data containers					  */
+/******************************************************************************/
 mxArray* SetMexArray(int N, int M) {
-	mxArray* Array	= mxCreateDoubleMatrix(0, 0, mxREAL);
-	mxSetM(Array, N);
-	mxSetN(Array, M);
-	mxSetData(Array, mxMalloc(sizeof(double)*M*N));
-	return Array;
+    mxArray* Array	= mxCreateDoubleMatrix(0, 0, mxREAL);
+    mxSetM(Array, N);
+    mxSetN(Array, M);
+    mxSetData(Array, mxMalloc(sizeof(double)*M*N));
+    return Array;
 }
-/****************************************************************************************************/
-/*										 		end													*/
-/****************************************************************************************************/
+
+mxArray* get_marker(Stim &stim) {
+    extern const int red;
+    mxArray* marker	= mxCreateDoubleMatrix(0, 0, mxREAL);
+    mxSetM(marker, 1);
+    mxSetN(marker, stim.marker_stimulation.size());
+    mxSetData(marker, mxMalloc(sizeof(double)*stim.marker_stimulation.size()));
+    double* Pr_Marker = mxGetPr(marker);
+    unsigned counter  = 0;
+    /* Division by res transforms marker time from dt to sampling rate */
+    for(auto & elem : stim.marker_stimulation) {
+        Pr_Marker[counter++] = elem/red;
+    }
+    return marker;
+}
