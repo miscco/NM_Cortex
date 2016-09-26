@@ -37,6 +37,7 @@
 #include <iterator>
 #include <vector>
 
+#include "Cortical_Column.h"
 #include "Data_Storage.h"
 #include "Stimulation.h"
 mxArray* SetMexArray(int N, int M);

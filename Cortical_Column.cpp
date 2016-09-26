@@ -42,10 +42,10 @@ void Cortical_Column::set_RNG(void) {
     Rand_vars.reserve(2*numRandomVariables);
     for (unsigned i=0; i < numRandomVariables; ++i){
         /* Add the RNG for I_{l}*/
-        MTRands.push_back(random_stream_normal(0.0, dphi*dt));
+        MTRands.push_back(randomStreamNormal(0.0, dphi*dt));
 
         /* Add the RNG for I_{l,0} */
-        MTRands.push_back(random_stream_normal(0.0, dt));
+        MTRands.push_back(randomStreamNormal(0.0, dt));
 
         /* Get the random number for the first iteration */
         Rand_vars.push_back(MTRands[2*i]());
@@ -67,12 +67,10 @@ double Cortical_Column::noise_aRK(int M) const{
 /******************************************************************************/
 /*                          Firing Rate functions 							  */
 /******************************************************************************/
-/* Pyramidal firing rate */
 double Cortical_Column::get_Qp	(int N) const{
     return Qp_max / (1 + exp(-C1 * (Vp[N] - theta_p) / sigma_p));
 }
 
-/* Inhibitory firing rate */
 double Cortical_Column::get_Qi	(int N) const{
     return Qi_max / (1 + exp(-C1 * (Vi[N] - theta_i) / sigma_i));
 }

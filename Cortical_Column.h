@@ -80,7 +80,7 @@ private:
     {var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6 + noise_aRK(noise);}
 
     /* Random number generators */
-    std::vector<random_stream_normal> MTRands;
+    std::vector<randomStreamNormal> MTRands;
 
     /* Container for noise */
     std::vector<double>	Rand_vars;
