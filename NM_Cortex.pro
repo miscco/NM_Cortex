@@ -3,7 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-TARGET = Cortex.cpp
+TARGET = release_binary
 
 SOURCES +=  Cortex_mex.cpp      \
 			Cortex.cpp          \
