@@ -167,7 +167,7 @@ private:
                         x_gp= init(0.0),	/* derivative of s_gp				 				*/
                         x_gi= init(0.0);	/* derivative of s_gi	 							*/
     /* Data storage  access */
-    friend void get_data (unsigned, Cortical_Column&, std::vector<double*>);
+    friend void get_data (unsigned, Cortical_Column&, std::vector<double*>&);
 
     /* Stimulation protocol access */
     friend class Stim;
