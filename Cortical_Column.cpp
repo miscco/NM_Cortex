@@ -31,6 +31,10 @@
 /******************************************************************************/
 #include "Cortical_Column.h"
 
+// std::array needs to be defined here
+constexpr std::array<double,4> Cortical_Column::A;
+constexpr std::array<double,4> Cortical_Column::B;
+
 /******************************************************************************/
 /*							Initialization of RNG 							  */
 /******************************************************************************/

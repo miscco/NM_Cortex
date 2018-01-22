@@ -30,6 +30,7 @@
 /*						Implementation of a cortical module					  */
 /******************************************************************************/
 #pragma once
+#include <array>
 #include <cmath>
 #include <vector>
 
@@ -38,7 +39,12 @@
 class Cortical_Column {
 public:
     Cortical_Column(double* Par)
-    : sigma_p (Par[0]), g_KNa (Par[1]), dphi (Par[2]) {set_RNG();}
+    : sigma_p (Par[0])
+    , g_KNa (Par[1])
+    , dphi (Par[2])
+    {
+        set_RNG();
+    }
 
     void	set_input	(double I) {input = I;}
     void	iterate_ODE	(void);
@@ -71,13 +77,17 @@ private:
 
     /* Helper functions */
     inline std::vector<double> init (double value)
-    {return {value, 0.0, 0.0, 0.0, 0.0};}
+    {
+        return {value, 0.0, 0.0, 0.0, 0.0};
+    }
 
-    inline void add_RK (std::vector<double>& var)
-    {var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6;}
+    inline void add_RK (std::vector<double>& var) {
+        var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6;
+    }
 
-    inline void add_RK_noise (std::vector<double>& var, unsigned noise)
-    {var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6 + noise_aRK(noise);}
+    inline void add_RK_noise (std::vector<double>& var, unsigned noise) {
+        var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6 + noise_aRK(noise);
+    }
 
     /* Random number generators */
     std::vector<randomStreamNormal> MTRands;
@@ -87,72 +97,72 @@ private:
 
     /* Declaration and Initialization of parameters */
     /* Membrane time in ms */
-    const double 	tau_p 		= 30;
-    const double 	tau_i 		= 30;
+    static constexpr double 	tau_p 		= 30;
+    static constexpr double 	tau_i 		= 30;
 
     /* Maximum firing rate in ms^-1 */
-    const double 	Qp_max		= 30.E-3;
-    const double 	Qi_max		= 60.E-3;
+    static constexpr double 	Qp_max		= 30.E-3;
+    static constexpr double 	Qi_max		= 60.E-3;
 
     /* Sigmoid threshold in mV */
-    const double 	theta_p		= -58.5;
-    const double 	theta_i		= -58.5;
+    static constexpr double 	theta_p		= -58.5;
+    static constexpr double 	theta_i		= -58.5;
 
     /* Sigmoid gain in mV */
-    const double 	sigma_p		= 4;
-    const double 	sigma_i		= 6;
+    const double                sigma_p		= 4;
+    static constexpr double 	sigma_i		= 6;
 
     /* Scaling parameter for sigmoidal mapping (dimensionless) */
-    const double 	C1		= (3.14159265/sqrt(3));
+    static constexpr double 	C1          = (M_PI/sqrt(3));
 
     /* Parameters of the firing adaption */
-    const double 	alpha_Na	= 2.;			/* Sodium influx per spike  in mM ms 	*/
-    const double 	tau_Na		= 1.;			/* Sodium time constant	    in ms 	*/
+    static constexpr double 	alpha_Na	= 2.;			/* Sodium influx per spike  in mM ms 	*/
+    static constexpr double 	tau_Na		= 1.;			/* Sodium time constant	    in ms 	*/
 
-    const double 	R_pump   	= 0.09;        	/* Na-K pump constant	    in mM/ms 	*/
-    const double 	Na_eq    	= 9.5;         	/* Na-eq concentration	    in mM 	*/
+    static constexpr double 	R_pump   	= 0.09;        	/* Na-K pump constant	    in mM/ms 	*/
+    static constexpr double 	Na_eq    	= 9.5;         	/* Na-eq concentration	    in mM 	*/
 
     /* PSP rise time in ms^-1 */
-    const double 	gamma_e		= 70E-3;
-    const double 	gamma_g		= 58.6E-3;
+    static constexpr double 	gamma_e		= 70E-3;
+    static constexpr double 	gamma_g		= 58.6E-3;
 
     /* Conductivities */
     /* Leak  in aU*/
-    const double 	g_L    		= 1.;
+    static constexpr double 	g_L    		= 1.;
 
     /* Synaptic conductivity in ms */
-    const double 	g_AMPA 		= 1.;
-    const double 	g_GABA 		= 1.;
+    static constexpr double 	g_AMPA 		= 1.;
+    static constexpr double 	g_GABA 		= 1.;
 
     /* KNa in mS/cm^-2 */
-    const double	g_KNa		= 1.33;
+    const double                g_KNa		= 1.33;
 
     /* Reversal potentials in mV */
     /* Synaptic */
-    const double 	E_AMPA  	= 0;
-    const double 	E_GABA  	= -70;
+    static constexpr double 	E_AMPA  	= 0;
+    static constexpr double 	E_GABA  	= -70;
 
     /* Leak */
-    const double 	E_L_p 		= -66;
-    const double 	E_L_i 		= -64;
+    static constexpr double 	E_L_p 		= -66;
+    static constexpr double 	E_L_i 		= -64;
 
     /* Potassium */
-    const double 	E_K    		= -100;
+    static constexpr double 	E_K    		= -100;
 
     /* Noise parameters in ms^-1 */
-    const double 	mphi		= 0.0;
-    const double	dphi		= 20E-1;
-    double			input		= 0.0;
+    static constexpr double 	mphi		= 0.0;
+    const double                dphi		= 20E-1;
+    double                      input		= 0.0;
 
     /* Connectivities (dimensionless) */
-    const double 	N_pp		= 120;
-    const double 	N_ip		= 72;
-    const double 	N_pi		= 90;
-    const double 	N_ii		= 90;
+    static constexpr double 	N_pp		= 120;
+    static constexpr double 	N_ip		= 72;
+    static constexpr double 	N_pi		= 90;
+    static constexpr double 	N_ii		= 90;
 
     /* Interation parameters for SRK4 */
-    const std::vector<double> A = {0.5, 0.5, 1.0, 1.0};
-    const std::vector<double> B = {0.75, 0.75, 0.0, 0.0};
+    static constexpr std::array<double,4> A = {0.5, 0.5, 1.0, 1.0};
+    static constexpr std::array<double,4> B = {0.75, 0.75, 0.0, 0.0};
 
     /* Population variables */
     std::vector<double> Vp	= init(E_L_p), /* excitatory membrane voltage						*/
